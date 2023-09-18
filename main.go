@@ -1,14 +1,18 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"os"
+
 	"github.com/prabhatpankaj/go-fiber-rest-api/pkg/configs"
 	"github.com/prabhatpankaj/go-fiber-rest-api/pkg/middleware"
 	"github.com/prabhatpankaj/go-fiber-rest-api/pkg/routes"
 	"github.com/prabhatpankaj/go-fiber-rest-api/pkg/utils"
 
-	_ "github.com/joho/godotenv/autoload"               // load .env file automatically
+	"github.com/gofiber/fiber/v2"
+
 	_ "github.com/prabhatpankaj/go-fiber-rest-api/docs" // load API Docs files (Swagger)
+
+	_ "github.com/joho/godotenv/autoload" // load .env file automatically
 )
 
 // @title API
@@ -19,10 +23,10 @@ import (
 // @contact.email your@mail.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @BasePath /api
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// @BasePath /api
 func main() {
 	// Define Fiber config.
 	config := configs.FiberConfig()
@@ -39,6 +43,10 @@ func main() {
 	routes.PrivateRoutes(app) // Register a private routes for app.
 	routes.NotFoundRoute(app) // Register route for 404 Error.
 
-	// Start server (with graceful shutdown).
-	utils.StartServer(app)
+	// Start server (with or without graceful shutdown).
+	if os.Getenv("STAGE_STATUS") == "dev" {
+		utils.StartServer(app)
+	} else {
+		utils.StartServerWithGracefulShutdown(app)
+	}
 }

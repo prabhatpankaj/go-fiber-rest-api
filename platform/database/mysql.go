@@ -10,24 +10,24 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	_ "github.com/jackc/pgx/v4/stdlib" // load pgx driver for PostgreSQL
+	_ "github.com/go-sql-driver/mysql" // load driver for Mysql
 )
 
-// PostgreSQLConnection func for connection to PostgreSQL database.
-func PostgreSQLConnection() (*sqlx.DB, error) {
+// MysqlConnection func for connection to Mysql database.
+func MysqlConnection() (*sqlx.DB, error) {
 	// Define database connection settings.
 	maxConn, _ := strconv.Atoi(os.Getenv("DB_MAX_CONNECTIONS"))
 	maxIdleConn, _ := strconv.Atoi(os.Getenv("DB_MAX_IDLE_CONNECTIONS"))
 	maxLifetimeConn, _ := strconv.Atoi(os.Getenv("DB_MAX_LIFETIME_CONNECTIONS"))
 
-	// Build PostgreSQL connection URL.
-	postgresConnURL, err := utils.ConnectionURLBuilder("postgres")
+	// Build Mysql connection URL.
+	mysqlConnURL, err := utils.ConnectionURLBuilder("mysql")
 	if err != nil {
 		return nil, err
 	}
 
-	// Define database connection for PostgreSQL.
-	db, err := sqlx.Connect("pgx", postgresConnURL)
+	// Define database connection for Mysql.
+	db, err := sqlx.Connect("mysql", mysqlConnURL)
 	if err != nil {
 		return nil, fmt.Errorf("error, not connected to database, %w", err)
 	}
