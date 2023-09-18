@@ -21,7 +21,7 @@ make docker.run
 
 4. Go to API Docs page (Swagger): [127.0.0.1:5000/swagger/index.html](http://127.0.0.1:5000/swagger/index.html)
 
-![Screenshot]('./img/swagger.png')
+![Screenshot](img/swagger.png)
 
 ## 🗄 Template structure
 
