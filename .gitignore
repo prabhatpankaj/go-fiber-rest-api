@@ -1,10 +1,6 @@
 # macOS
 **/.DS_Store
 
-# IDEs
-.vscode/
-.idea/
-
 # Dev build
 build/
 tmp/
