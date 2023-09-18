@@ -7,16 +7,16 @@ import (
 
 // NewValidator func for create a new validator for model fields.
 func NewValidator() *validator.Validate {
-	// Create a new validator for a Book model.
+	// Create a new validator for a model.
 	validate := validator.New()
 
 	// Custom validation for uuid.UUID fields.
 	_ = validate.RegisterValidation("uuid", func(fl validator.FieldLevel) bool {
 		field := fl.Field().String()
 		if _, err := uuid.Parse(field); err != nil {
-			return false  // if there is an error, validation should return false
+			return false // if there is an error, validation should return false
 		}
-		return true  // if no error, validation should return true 
+		return true // if no error, validation should return true
 	})
 
 	return validate

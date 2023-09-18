@@ -5,6 +5,7 @@ import "github.com/prabhatpankaj/go-fiber-rest-api/app/queries"
 // Queries struct for collect all app queries.
 type Queries struct {
 	*queries.BookQueries // load queries from Book model
+	*queries.UserQueries // load queries from Users and Profile model
 }
 
 // OpenDBConnection func for opening database connection.
@@ -17,6 +18,7 @@ func OpenDBConnection() (*Queries, error) {
 
 	return &Queries{
 		// Set queries from models:
-		BookQueries: &queries.BookQueries{DB: db}, // from Book model
+		BookQueries: &queries.BookQueries{DB: db},
+		UserQueries: &queries.UserQueries{DB: db},
 	}, nil
 }

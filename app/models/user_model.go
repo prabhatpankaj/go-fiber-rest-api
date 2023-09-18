@@ -29,10 +29,11 @@ type Profile struct {
 }
 
 type SignUpInput struct {
-	FullName        string `json:"full_name" validate:"required,lte=100"`
-	Email           string `json:"email" validate:"required,min=8"`
-	Password        string `json:"password" validate:"required,min=8"`
-	PasswordConfirm string `json:"passwordConfirm" validate:"required,min=8"`
+	FullName        string `json:"full_name" validate:"required,min=5,max=10"`
+	Username        string `json:"username" validate:"required,min=5,max=10"`
+	Email           string `json:"email" validate:"required,min=3"`
+	Password        string `json:"password" validate:"required,min=3"`
+	PasswordConfirm string `json:"passwordConfirm" validate:"required,min=3"`
 }
 
 type SignInInput struct {
