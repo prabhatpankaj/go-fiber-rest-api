@@ -13,10 +13,18 @@
    - [github.com/go-critic/go-critic](https://github.com/go-critic/go-critic) for checking Go the best practice issues
    - [github.com/golangci/golangci-lint](https://github.com/golangci/golangci-lint) for checking Go linter issues
 
-3. Run project by this command:
+3. initialize and Run project by this command:
 
 ```bash
 make docker.run
+
+```
+
+3. Rebuild and Run project by this command:
+
+```bash
+make docker.app-fiber.build-run
+
 ```
 
 4. Go to API Docs page (Swagger): [127.0.0.1:5000/swagger/index.html](http://127.0.0.1:5000/swagger/index.html)
@@ -98,3 +106,10 @@ REDIS_DB_NUMBER=0
 ## ⚠️ License
 
 Apache 2.0
+
+
+* some refrence 
+
+https://github.com/gofiber/fiber
+
+https://github.com/wpcodevo/golang-fiber-jwt.git

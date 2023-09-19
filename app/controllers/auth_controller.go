@@ -27,7 +27,6 @@ import (
 func UserSignUp(c *fiber.Ctx) error {
 	// Create a new user auth struct.
 	signUp := &models.SignUp{}
-
 	// Checking received data from JSON body.
 	if err := c.BodyParser(signUp); err != nil {
 		// Return status 400 and error message.
@@ -36,7 +35,6 @@ func UserSignUp(c *fiber.Ctx) error {
 			"msg":   err.Error(),
 		})
 	}
-
 	// Create a new validator for a User model.
 	validate := utils.NewValidator()
 
