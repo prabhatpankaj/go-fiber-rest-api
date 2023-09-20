@@ -129,7 +129,7 @@ func UserSignIn(c *fiber.Ctx) error {
 			"msg":   err.Error(),
 		})
 	}
-
+		
 	// Create database connection.
 	db, err := database.OpenDBConnection()
 	if err != nil {

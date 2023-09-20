@@ -88,8 +88,3 @@ docker.app-fiber.remove:
 	docker rm -f app-fiber && docker rmi fiber
 
 docker.app-fiber.build-run: docker.app-fiber.remove docker.fiber
-	docker run --rm -d \
-		--name app-fiber \
-		--network dev-network \
-		-p 5000:5000 \
-		fiber
