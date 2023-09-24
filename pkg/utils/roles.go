@@ -12,8 +12,6 @@ func VerifyRole(role string) (string, error) {
 	switch role {
 	case repository.AdminRoleName:
 		// Nothing to do, verified successfully.
-	case repository.ModeratorRoleName:
-		// Nothing to do, verified successfully.
 	case repository.UserRoleName:
 		// Nothing to do, verified successfully.
 	default:
@@ -22,4 +20,14 @@ func VerifyRole(role string) (string, error) {
 	}
 
 	return role, nil
+}
+
+func hasPermission(userRoles []string, requiredPermission string) bool {
+	// Check if the user's roles contain the required permission
+	for _, role := range userRoles {
+		if role == requiredPermission {
+			return true
+		}
+	}
+	return false
 }

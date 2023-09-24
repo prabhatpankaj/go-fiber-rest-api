@@ -95,18 +95,18 @@ func RenewTokens(c *fiber.Ctx) error {
 			})
 		}
 
-		// Get role credentials from founded user.
-		credentials, err := utils.GetCredentialsByRole(foundedUser.UserRole)
+		// Get Role by user id.
+		foundedRoles, err := db.GetRoleByUser(foundedUser.ID)
 		if err != nil {
-			// Return status 400 and error message.
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			// Return, if user not found.
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": true,
-				"msg":   err.Error(),
+				"msg":   "role with the given user id is not found",
 			})
 		}
 
 		// Generate JWT Access & Refresh tokens.
-		tokens, err := utils.GenerateNewTokens(userID.String(), credentials)
+		tokens, err := utils.GenerateNewTokens(foundedUser.ID.String(), foundedRoles)
 		if err != nil {
 			// Return status 500 and token generation error.
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

@@ -67,6 +67,16 @@ func UserSignUp(c *fiber.Ctx) error {
 		})
 	}
 
+	// Get role by name.
+	foundedRole, err := db.GetRoleByName(role)
+	if err != nil {
+		// Return, if role not found.
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "given role is not found",
+		})
+	}
+
 	// Create a new user struct.
 	user := &models.User{}
 
@@ -74,9 +84,9 @@ func UserSignUp(c *fiber.Ctx) error {
 	user.ID = uuid.New()
 	user.CreatedAt = time.Now()
 	user.Email = signUp.Email
+	user.FullName = signUp.Name
 	user.PasswordHash = utils.GeneratePassword(signUp.Password)
 	user.UserStatus = 1 // 0 == blocked, 1 == active
-	user.UserRole = role
 
 	// Validate user fields.
 	if err := validate.Struct(user); err != nil {
@@ -90,6 +100,20 @@ func UserSignUp(c *fiber.Ctx) error {
 	// Create a new user with validated data.
 	if err := db.CreateUser(user); err != nil {
 		// Return status 500 and create user process error.
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	// Create a new userrole struct.
+	user_role := &models.UserRole{}
+	user_role.UserID = user.ID
+	user_role.RoleID = foundedRole.ID
+
+	// Create a new userrole with validated data.
+	if err := db.CreateUserRole(user_role); err != nil {
+		// Return status 500 and create userrole process error.
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": true,
 			"msg":   err.Error(),
@@ -129,7 +153,7 @@ func UserSignIn(c *fiber.Ctx) error {
 			"msg":   err.Error(),
 		})
 	}
-		
+
 	// Create database connection.
 	db, err := database.OpenDBConnection()
 	if err != nil {
@@ -160,18 +184,18 @@ func UserSignIn(c *fiber.Ctx) error {
 		})
 	}
 
-	// Get role credentials from founded user.
-	credentials, err := utils.GetCredentialsByRole(foundedUser.UserRole)
+	// Get Role by user id.
+	foundedRoles, err := db.GetRoleByUser(foundedUser.ID)
 	if err != nil {
-		// Return status 400 and error message.
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		// Return, if user not found.
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": true,
-			"msg":   err.Error(),
+			"msg":   "role with the given user id is not found",
 		})
 	}
 
 	// Generate a new pair of access and refresh tokens.
-	tokens, err := utils.GenerateNewTokens(foundedUser.ID.String(), credentials)
+	tokens, err := utils.GenerateNewTokens(foundedUser.ID.String(), foundedRoles)
 	if err != nil {
 		// Return status 500 and token generation error.
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -259,4 +283,44 @@ func UserSignOut(c *fiber.Ctx) error {
 
 	// Return status 204 no content.
 	return c.SendStatus(fiber.StatusNoContent)
+}
+
+// GetRoles func gets all exists roles.
+// @Description Get all exists roles.
+// @Summary get all exists roles
+// @Tags Roles
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Role
+// @Router /v1/roles [get]
+func GetRoles(c *fiber.Ctx) error {
+	// Create database connection.
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		// Return status 500 and database connection error.
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	// Get all roles.
+	roles, err := db.GetRoles()
+	if err != nil {
+		// Return, if roles not found.
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "roles were not found",
+			"count": 0,
+			"roles": nil,
+		})
+	}
+
+	// Return status 200 OK.
+	return c.JSON(fiber.Map{
+		"error": false,
+		"msg":   nil,
+		"count": len(roles),
+		"roles": roles,
+	})
 }
